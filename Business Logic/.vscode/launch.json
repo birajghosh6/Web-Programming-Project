@@ -1,0 +1,34 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-MovieServiceNoOauthApplication<MovieServiceNoOauth>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "mainClass": "com.example.demo.MovieServiceNoOauthApplication",
+            "projectName": "MovieServiceNoOauth",
+            "args": ""
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-RatingServiceNoOauthApplication<RatingServiceNoOauth>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "mainClass": "com.example.demo.RatingServiceNoOauthApplication",
+            "projectName": "RatingServiceNoOauth",
+            "args": ""
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-MovieCatalogNoOauthApplication<MovieCatalogNoOauth>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "mainClass": "com.example.demo.MovieCatalogNoOauthApplication",
+            "projectName": "MovieCatalogNoOauth",
+            "args": ""
+        }
+    ]
+}
