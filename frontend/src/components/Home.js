@@ -4,13 +4,15 @@ import axios from 'axios';
 export default class Home extends Component {
 
     state ={
-        userId: 0
+        userId: '',
+        password: ''
     }
 
     handleSubmit = (e) => {
         e.preventDefault();
         console.log("User ID:"+this.state.userId);
-        this.props.setUserId(this.state.userId);
+        console.log("Password:"+this.state.password);
+        this.props.setUser(this.state);
         axios
         .get(`http://localhost:9091/catalog/showratedmovie/${this.state.userId}`,{
             responseType: 'json'
@@ -43,7 +45,8 @@ export default class Home extends Component {
         );
         
         this.setState({
-            userId: 0
+            userId: '',
+            password: ''
         });
     }
 
@@ -54,6 +57,12 @@ export default class Home extends Component {
     handleUserIdInput = (e) => {
         this.setState({
             userId: e.target.value
+        });
+    }
+
+    handlePasswordInput = (e) => {
+        this.setState({
+            password: e.target.value
         });
     }
 
@@ -74,7 +83,7 @@ export default class Home extends Component {
                         }}
                         onSubmit ={this.handleSubmit}
                 >
-                    <label htmlFor = 'usedId' >USER ID: </label>
+                    <label htmlFor = 'usedId' >Username: </label>
                     <input 
                         type = 'text'
                         placeholder = 'Enter your ID..'
@@ -84,11 +93,28 @@ export default class Home extends Component {
                         value = {this.state.userId === 0 ? 
                                     '': this.state.userId}
                         style = {{
-                            marginLeft: '20px',
+                            marginLeft: '10px',
+                            marginRight: '22px',
+                            height: '21px'
+                        }}
+                    />
+                    <br />
+                    <label htmlFor = 'password' >Password: </label>
+                    <input 
+                        type = 'password'
+                        placeholder = 'Enter your Password..'
+                        id = 'password'
+                        name = 'password'
+                        onChange = {this.handlePasswordInput}
+                        value = {this.state.password === '' ? 
+                                    '': this.state.password}
+                        style = {{
+                            marginLeft: '11px',
                             marginRight: '20px',
                             height: '21px'
                         }}
                     />
+                    <br />
                     <input  type = 'submit' 
                             value = 'Submit' 
                             onClick = {this.onClickSubmitButton}

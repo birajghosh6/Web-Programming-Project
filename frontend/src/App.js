@@ -6,13 +6,15 @@ import AddMovie from './components/AddMovie';
 import UpdateMovie from './components/UpdateMovie';
 import Home from './components/Home';
 import axios from 'axios';
+import AddRating from './components/AddRating';
 
 class App extends Component {
 
   state = {
     movies: [],
-    userId: 0,
-    ratedMovies: [],
+    userId: '',
+    password: '',
+    ratedMovies: [],//has same structure as movies
     ratings: [],
     solidYellow: '#DCC943',
     titleBlack: '#333',
@@ -78,14 +80,60 @@ class App extends Component {
             "\n\nSuccessfully updated!"
       );
   }
+  addRating = (newRatedMovie) => {
+    //console.log(newRatedMovie);
+    axios
+      .post('http://localhost:9092/ratingservice/addrating',newRatedMovie)
+      .then(
+        res => {
+          this.setState({
+            ratings: [...this.state.ratings,res.data]
+          });
+          //start of inner axios
+          axios.get(`http://localhost:9090/movieservice/movie/${res.data.movieId}`)
+          .then(
+            res2 => {
+              this.setState({
+                ratedMovies: [...this.state.ratedMovies,res2.data]
+              });
+              // console.log("Addition to rated movies");
+              // console.log(res2.data);
+            }
+          )
+          .catch(
+            function(error) {console.log(error);}
+          );
+          //end of inner axios
+        }
+      )
+      .catch(
+        function(error) {console.log(error);}
+      )
+    
+  }
 
-  setUserId = (receivedId) => {
+  setUser = (receivedUser) => {
     this.setState({
-      userId: receivedId,
       ratedMovies: [],
       ratings: []
-
     });
+    axios
+    .post('http://localhost:9095/login/checkUser', receivedUser)
+    .then(
+      res => {
+        res.data ?
+          this.setState({
+            userId: receivedUser.userId,
+            password: receivedUser.password
+          })
+          :
+          this.setState({
+            userId: '',
+            password: ''
+          })
+      }
+    )
+    .catch(function(error){console.log(error)});
   }
 
   setRatedMovies = (ratedMovie) => {
@@ -123,13 +171,13 @@ class App extends Component {
             fontWeight: 'normal',
             paddingBottom: '0px'
           }} > 
-            Active User ID : {" "}
+            Active User : {" "}
               <span style={{
                 color: 'lightblue',
                 textShadow: '0px 0px 3px blue',
                 fontWeight: 'bolder'
               }}>
-                {this.state.userId === 0 ? 'None':this.state.userId}
+                {this.state.userId === '' ? 'None':this.state.userId}
               </span>
           </h3>
           
@@ -152,20 +200,22 @@ class App extends Component {
           |
           <Link to="/showratedmovies" style={linkStyle}>User Ratings</Link>
           |
+          <Link to="/addrating" style={linkStyle}>Add Ratings</Link>
+          |
           <Link to="/addmovie" style={linkStyle}>Add Movie</Link>
           |
           <Link to="/updatemovie" style={linkStyle}>Update Movies</Link>
         </div>
         <div>
-          <Route exact path="/" render = { props => (
+          {/* <Route exact path="/" render = { props => (
             <React.Fragment>
                 <Home />
             </React.Fragment>
-          )} />
-          <Route exact path="/home" render = { props => (
+          )} /> */}
+          <Route exact path={["/home","/"]} render = { props => (
             <React.Fragment>
                 <Home 
-                  setUserId= {this.setUserId}
+                  setUser= {this.setUser}
                   setRatings ={this.setRatings}
                   setRatedMovies = {this.setRatedMovies}
                 />
@@ -173,7 +223,7 @@ class App extends Component {
           )} />
           <Route exact path="/showmovies" render= { props => (
             <React.Fragment>
-              <Movies movies= {this.state.movies} />
+              <Movies movies= {this.state.movies} userId = {this.state.userId} />
             </React.Fragment>
           )} />
           <Route exact path="/showratedmovies" render = { props => (
@@ -181,17 +231,27 @@ class App extends Component {
                 <RatedMovies 
                   ratedMovies ={this.state.ratedMovies}
                   ratings = {this.state.ratings}
+                  userId = {this.state.userId}
+                />
+            </React.Fragment>
+          )} />
+          <Route exact path="/addrating" render = { props => (
+            <React.Fragment>
+                <AddRating  addRating= {this.addRating} 
+                            userId= {this.state.userId}
+                            movies= {this.state.movies}
+                            ratedMovies= {this.state.ratedMovies}
                 />
             </React.Fragment>
           )} />
           <Route exact path="/addmovie" render = { props => (
             <React.Fragment>
-                <AddMovie addMovie= {this.addMovie} />
+                <AddMovie addMovie= {this.addMovie} userId = {this.state.userId} />
             </React.Fragment>
           )} />
           <Route exact path="/updatemovie" render = { props => (
             <React.Fragment>
-                <UpdateMovie updateMovie={this.updateMovie} />
+                <UpdateMovie updateMovie={this.updateMovie} userId = {this.state.userId} />
             </React.Fragment>
           )
 

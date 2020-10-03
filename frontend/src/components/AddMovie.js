@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import notAuthorized from './notAuthorized';
 
 export default class AddMovie extends Component {
     state = {
@@ -21,7 +22,10 @@ export default class AddMovie extends Component {
     }
         
     render() {
-        return (
+        return this.props.userId.length===0 ? 
+            notAuthorized()
+            :
+            (
             <div style={{
                 backgroundColor: '#FFFF99',
                 width: '100%',

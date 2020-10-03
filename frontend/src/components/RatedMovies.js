@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import RatingItem from './RatingItem';
+import notAuthorized from './notAuthorized'
 
 export default class RatedMovies extends Component {
 
@@ -10,11 +11,14 @@ export default class RatedMovies extends Component {
     }
 */
     render() {
-        return (
+        return this.props.userId.length===0 ? 
+        notAuthorized()
+        :
+        (
             <div
                 style = {{
                     backgroundColor: '#FFFF99',
-                    position: 'fixed',
+                    //position: 'fixed',
                     height: '100%',
                     width: '100%'
                 }}

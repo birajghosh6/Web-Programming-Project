@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios'
+import notAuthorized from './notAuthorized'
 
 export default class UpdateMovie extends Component {
 
@@ -81,7 +82,10 @@ export default class UpdateMovie extends Component {
 
     render() {
         //console.log(this.state.movies);
-        return (
+        return this.props.userId.length===0 ? 
+        notAuthorized()
+        :
+        (
             <div style={{
               backgroundColor: '#FFFF99',
               width: '100%',
