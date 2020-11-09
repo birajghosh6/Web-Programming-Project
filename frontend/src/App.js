@@ -7,13 +7,14 @@ import UpdateMovie from './components/UpdateMovie';
 import Home from './components/Home';
 import axios from 'axios';
 import AddRating from './components/AddRating';
+import Cookies from 'js-cookie'
 
 class App extends Component {
 
   state = {
     movies: [],
-    userId: '',
-    password: '',
+    //userId: '',
+    //password: '',
     ratedMovies: [],//has same structure as movies
     ratings: [],
     solidYellow: '#DCC943',
@@ -121,16 +122,20 @@ class App extends Component {
     .post('http://localhost:9095/login/checkUser', receivedUser)
     .then(
       res => {
-        res.data ?
-          this.setState({
-            userId: receivedUser.userId,
-            password: receivedUser.password
-          })
-          :
-          this.setState({
-            userId: '',
-            password: ''
-          })
+        // res.data ?
+        //   this.setState({
+        //     userId: receivedUser.userId,
+        //     password: receivedUser.password
+        //   })
+        //   :
+        //   this.setState({
+        //     userId: '',
+        //     password: ''
+        //   })
+        if(res.data){
+          Cookies.set('userId',receivedUser.userId);
+          Cookies.set('password',receivedUser.password);
+        }
       }
     )
     .catch(function(error){console.log(error)});
@@ -177,7 +182,8 @@ class App extends Component {
                 textShadow: '0px 0px 3px blue',
                 fontWeight: 'bolder'
               }}>
-                {this.state.userId === '' ? 'None':this.state.userId}
+                {/* {this.state.userId === '' ? 'None':this.state.userId} */}
+                {Cookies.get('userId') ? Cookies.get('userId'): 'None'}
               </span>
           </h3>
           
@@ -223,7 +229,7 @@ class App extends Component {
           )} />
           <Route exact path="/showmovies" render= { props => (
             <React.Fragment>
-              <Movies movies= {this.state.movies} userId = {this.state.userId} />
+              <Movies movies= {this.state.movies} userId = {/*this.state.userId*/ Cookies.get('userId')?Cookies.get('userId'):''} />
             </React.Fragment>
           )} />
           <Route exact path="/showratedmovies" render = { props => (
@@ -231,14 +237,14 @@ class App extends Component {
                 <RatedMovies 
                   ratedMovies ={this.state.ratedMovies}
                   ratings = {this.state.ratings}
-                  userId = {this.state.userId}
+                  userId = {/*this.state.userId*/ Cookies.get('userId')?Cookies.get('userId'):''}
                 />
             </React.Fragment>
           )} />
           <Route exact path="/addrating" render = { props => (
             <React.Fragment>
                 <AddRating  addRating= {this.addRating} 
-                            userId= {this.state.userId}
+                            userId= {/*this.state.userId*/ Cookies.get('userId')?Cookies.get('userId'):''}
                             movies= {this.state.movies}
                             ratedMovies= {this.state.ratedMovies}
                 />
@@ -246,12 +252,12 @@ class App extends Component {
           )} />
           <Route exact path="/addmovie" render = { props => (
             <React.Fragment>
-                <AddMovie addMovie= {this.addMovie} userId = {this.state.userId} />
+                <AddMovie addMovie= {this.addMovie} userId = {/*this.state.userId*/ Cookies.get('userId')?Cookies.get('userId'):''} />
             </React.Fragment>
           )} />
           <Route exact path="/updatemovie" render = { props => (
             <React.Fragment>
-                <UpdateMovie updateMovie={this.updateMovie} userId = {this.state.userId} />
+                <UpdateMovie updateMovie={this.updateMovie} userId = {/*this.state.userId*/ Cookies.get('userId')?Cookies.get('userId'):''} />
             </React.Fragment>
           )
 
